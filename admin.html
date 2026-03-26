@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Janu Fashion Jewelry</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <h2>Admin Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="admin-dashboard" id="adminDashboard" style="display: none;">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="container">
+                <h1>Admin Panel - Janu Fashion Jewelry</h1>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="admin-nav">
+            <div class="container">
+                <button class="nav-btn" data-section="dashboard" onclick="showSection('dashboard')">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-section="news" onclick="showSection('news')">
+                    <i class="fas fa-newspaper"></i> News
+                </button>
+                <button class="nav-btn" data-section="products" onclick="showSection('products')">
+                    <i class="fas fa-box"></i> Products
+                </button>
+                <button class="nav-btn" data-section="orders" onclick="showSection('orders')">
+                    <i class="fas fa-shopping-bag"></i> Orders
+                </button>
+                <button class="nav-btn" data-section="sales" onclick="showSection('sales')">
+                    <i class="fas fa-chart-bar"></i> Sales Reports
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="container">
+                <!-- Dashboard Section -->
+                <section class="admin-section active" id="dashboard">
+                    <h2>Dashboard Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalProducts">0</h3>
+                                <p>Total Products</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalOrders">0</h3>
+                                <p>Total Orders</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>₹<span id="totalRevenue">0</span></h3>
+                                <p>Total Revenue</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="lowStock">0</h3>
+                                <p>Low Stock Items</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- News Management Section -->
+                <section class="admin-section" id="news">
+                    <div class="section-header">
+                        <h2>News Management</h2>
+                        <button class="btn-primary" onclick="updateNews()">
+                            <i class="fas fa-save"></i> Update News
+                        </button>
+                    </div>
+                    <div class="news-management">
+                        <div class="form-group">
+                            <label for="newsText">Latest News Text</label>
+                            <textarea id="newsText" rows="3" placeholder="Enter the latest news that will appear on the homepage ticker..." oninput="updateNewsPreview()">Welcome to Janu Fashion Jewelry - Your destination for exquisite jewelry!</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="heroBgUpload">Hero Background Images (rotate every 5s)</label>
+                            <input type="file" id="heroBgUpload" accept="image/*" multiple>
+                            <div id="heroBgPreview" class="image-preview" style="margin-top: 10px;"></div>
+                            <small>Upload 1 or more images. They will rotate as the “Premium Jewelry Collection” background.</small>
+                        </div>
+                        <div class="news-preview">
+                            <h4>Preview:</h4>
+                            <div class="news-ticker-preview">
+                                <span class="news-label">📢 Latest News:</span>
+                                <div class="news-scroll">
+                                    <span class="news-item" id="newsPreview">Welcome to Janu Fashion Jewelry - Your destination for exquisite jewelry!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Products Section -->
+                <section class="admin-section" id="products">
+                    <div class="section-header">
+                        <h2>Product Management</h2>
+                        <button class="btn-primary" onclick="openProductModal()">
+                            <i class="fas fa-plus"></i> Add Product
+                        </button>
+                    </div>
+                    <div class="products-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price (Offer)</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTable">
+                                <!-- Products will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Orders Management Section -->
+                <section class="admin-section" id="orders">
+                    <div class="section-header">
+                        <h2>Order Management</h2>
+                        <div class="order-controls">
+                            <button class="btn-primary" onclick="refreshOrders()">
+                                <i class="fas fa-sync"></i> Refresh
+                            </button>
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" data-filter="all">All</button>
+                                <button class="filter-btn" data-filter="pending">Pending</button>
+                                <button class="filter-btn" data-filter="confirmed">Confirmed</button>
+                                <button class="filter-btn" data-filter="processing">In-Progress</button>
+                                <button class="filter-btn" data-filter="shipped">Shipped</button>
+                                <button class="filter-btn" data-filter="delivered">Delivered</button>
+                                <button class="filter-btn" data-filter="cancelled">Cancelled</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="orders-container" id="ordersContainer">
+                        <!-- Orders will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Sales Reports Section -->
+                <section class="admin-section" id="sales">
+                    <div class="section-header">
+                        <h2>Sales Reports</h2>
+                        <div class="report-controls">
+                            <select id="reportType">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                            <input type="date" id="startDate">
+                            <input type="date" id="endDate">
+                            <button class="btn-primary" onclick="generateReport()">Generate Report</button>
+                            <button class="btn-secondary" onclick="downloadSalesReport()">Download CSV</button>
+                        </div>
+                    </div>
+                    <div class="report-content">
+                        <div class="chart-container">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                        <div class="report-summary">
+                            <h3>Report Summary</h3>
+                            <div id="reportSummaryContent">
+                                <!-- Report summary will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Product</h3>
+                <button class="close-modal" onclick="closeProductModal()">&times;</button>
+            </div>
+            <form id="productForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="productName">Product Name</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Category</label>
+                        <select id="productCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="rings">Rings</option>
+                            <option value="necklaces">Necklaces</option>
+                            <option value="earrings">Earrings</option>
+                            <option value="bracelets">Bracelets</option>
+                            <option value="anklets">Anklets</option>
+                            <option value="nose-rings">Nose Rings</option>
+                        </select>
+                        <button type="button" class="btn-small" onclick="openCategoryModal()">+ Add New Category</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="productPrice">Price (₹)</label>
+                        <input type="number" id="productPrice" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productOfferPrice">Offer Price (₹)</label>
+                        <input type="number" id="productOfferPrice" min="0" placeholder="Optional - Leave empty for no offer">
+                    </div>
+                    <div class="form-group">
+                        <label for="productStock">Stock Quantity</label>
+                        <input type="number" id="productStock" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Description</label>
+                    <textarea id="productDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="imageUpload">Product Images (3-5 images)</label>
+                    <input type="file" id="imageUpload" multiple accept="image/*">
+                    <div class="image-preview" id="imagePreview"></div>
+                    <small>Click "Choose Files" to select multiple images. Each image can be removed with the × button.</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeProductModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Management Modal -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Category</h3>
+                <button class="close-modal" onclick="closeCategoryModal()">&times;</button>
+            </div>
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label for="categoryName">Category Name</label>
+                    <input type="text" id="categoryName" placeholder="e.g., Bangles" required>
+                </div>
+                <div class="form-group">
+                    <label for="categorySlug">Category Slug (URL-friendly)</label>
+                    <input type="text" id="categorySlug" placeholder="e.g., bangles" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeCategoryModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
